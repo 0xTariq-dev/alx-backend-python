@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 """
     This module contains a function add that adds two floats
     and returns the result
