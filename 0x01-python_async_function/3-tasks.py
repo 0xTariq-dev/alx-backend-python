@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+"""This module contains the task_wait_random function"""
 
 import asyncio
 
