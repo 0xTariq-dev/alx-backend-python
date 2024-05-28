@@ -2,11 +2,13 @@
 """This module contains the Test class for the file `utils.py`"""
 
 import unittest
-from unittest.mock import patch, PropertyMock, MagicMock
-from parameterized import parameterized
+from unittest.mock import patch, PropertyMock, MagicMock, Mock
+from parameterized import parameterized, parameterized_class
 from client import GithubOrgClient
 from typing import Dict
+from fixtures import TEST_PAYLOAD
 from fake_payload import FAKE_PAYLOAD as FakePayload
+from requests.exceptions import HTTPError
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -60,3 +62,38 @@ class TestGithubOrgClient(unittest.TestCase):
         """Test the method `has_license`"""
         test_class = GithubOrgClient('google')
         self.assertEqual(test_class.has_license(repo, key), res)
+
+
+@parameterized_class([
+    {
+        'org_payload': TEST_PAYLOAD[0][0],
+        'repos_payload': TEST_PAYLOAD[0][1],
+        'expected_repos': TEST_PAYLOAD[0][2],
+        'apache2_repos': TEST_PAYLOAD[0][3],
+    },
+])
+class TestIntegrationGithubOrgClient(unittest.TestCase):
+    """Integration test cases for the class `GithubOrgClient`"""
+
+    @classmethod
+    def setUpClass(cls) -> None:
+        """Set up for the class `TestIntegrationGithubOrgClient`"""
+        gh_org = GithubOrgClient('google')
+        route_payload = {
+            f'{gh_org.ORG_URL}': cls.org_payload,
+            f'{gh_org.ORG_URL}/repos': cls.repos_payload,
+        }
+
+        def side_effect(url: str) -> Dict:
+            """Side effect for the `get_json` mock"""
+            if url in route_payload:
+                return Mock(**{'json.return_value': route_payload[url]})
+            return HTTPError
+
+        cls.get_patcher = patch('requests.get', side_effect=side_effect)
+        cls.get_patcher.start()
+
+    @classmethod
+    def tearDownClass(cls) -> None:
+        """Tear down for the class `TestIntegrationGithubOrgClient`"""
+        cls.get_patcher.stop()
