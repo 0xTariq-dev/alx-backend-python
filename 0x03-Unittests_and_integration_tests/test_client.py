@@ -8,7 +8,7 @@ from client import GithubOrgClient
 from typing import Dict
 from fixtures import TEST_PAYLOAD
 from fake_payload import FAKE_PAYLOAD as FakePayload
-from requests.exceptions import HTTPError
+from requests import HTTPError
 
 
 class TestGithubOrgClient(unittest.TestCase):
@@ -79,9 +79,11 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
     def setUpClass(cls) -> None:
         """Set up for the class `TestIntegrationGithubOrgClient`"""
         gh_org = GithubOrgClient('google')
+        url, repos_url = gh_org.org['url'], gh_org.org['repos_url']
+
         route_payload = {
-            f'{gh_org.ORG_URL}': cls.org_payload,
-            f'{gh_org.ORG_URL}/repos': cls.repos_payload,
+            f'{url}': cls.org_payload,
+            f'{repos_url}': cls.repos_payload,
         }
 
         def side_effect(url: str) -> Dict:
@@ -92,6 +94,20 @@ class TestIntegrationGithubOrgClient(unittest.TestCase):
 
         cls.get_patcher = patch('requests.get', side_effect=side_effect)
         cls.get_patcher.start()
+
+    def test_public_repos(self) -> None:
+        """Test the method `public_repos` """
+        self.assertEqual(
+            GithubOrgClient('google').public_repos(),
+            self.expected_repos,
+        )
+
+    def test_public_repos_with_license(self) -> None:
+        """Test the method `has_license"""
+        self.assertEqual(
+            GithubOrgClient('google').public_repos(license="apache-2.0"),
+            self.apache2_repos
+        )
 
     @classmethod
     def tearDownClass(cls) -> None:
