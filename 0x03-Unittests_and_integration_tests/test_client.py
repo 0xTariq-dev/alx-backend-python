@@ -2,17 +2,13 @@
 """This module contains the Test class for the file `utils.py`"""
 
 import unittest
-from unittest.mock import Mock, patch, PropertyMock
-from parameterized import parameterized, parameterized_class
+from unittest.mock import patch, PropertyMock, MagicMock
+from parameterized import parameterized
 from client import GithubOrgClient
 from typing import Dict
+from fake_payload import FAKE_PAYLOAD as FakePayload
 
 
-# @patch('client.get_json')
-# @parameterized_class(('org_name', 'mock_get_json'), [
-#     ('google', Mock()),
-#     ('abc', Mock())
-# ])
 class TestGithubOrgClient(unittest.TestCase):
     """Test cases for the class `GithubOrgClient`"""
 
@@ -38,3 +34,20 @@ class TestGithubOrgClient(unittest.TestCase):
                 test_class._public_repos_url,
                 "https://api.github.com/users/google/repos"
                 )
+
+    @patch('client.get_json')
+    def test_public_repos(self, mock_get_json: MagicMock) -> None:
+        """Test the method `public_repos`"""
+        test_payload = FakePayload
+
+        mock_get_json.return_value = test_payload['repos']
+        with patch('client.GithubOrgClient._public_repos_url',
+                   new_callable=PropertyMock) as mock_public_repos_url:
+            mock_public_repos_url.return_value = test_payload['repos_url']
+            test_class = GithubOrgClient('google')
+            self.assertEqual(
+                test_class.public_repos(),
+                ['episodes.dart', 'cpp-netlib']
+                )
+            mock_public_repos_url.assert_called_once()
+        mock_get_json.assert_called_once()
