@@ -18,6 +18,13 @@ FAKE_PAYLOAD = {
             "has_issues": True,
             "forks": 22,
             "default_branch": "master",
+            "license": {
+                "key": "bsd-3-clause",
+                "name": "BSD 3-Clause \"New\" or \"Revised\" License",
+                "spdx_id": "BSD-3-Clause",
+                "url": "https://api.github.com/licenses/bsd-3-clause",
+                "node_id": "MDc6TGljZW5zZTU="
+            }
         },
         {
             "id": 7776515,
@@ -34,6 +41,13 @@ FAKE_PAYLOAD = {
             "has_issues": False,
             "forks": 59,
             "default_branch": "master",
+            "license": {
+                "key": "bsl-1.0",
+                "name": "Boost Software License 1.0",
+                "spdx_id": "BSL-1.0",
+                "url": "https://api.github.com/licenses/bsl-1.0",
+                "node_id": "MDc6TGljZW5zZTI4"
+            }
         }
     ]
 }

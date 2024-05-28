@@ -51,3 +51,12 @@ class TestGithubOrgClient(unittest.TestCase):
                 )
             mock_public_repos_url.assert_called_once()
         mock_get_json.assert_called_once()
+
+    @parameterized.expand([
+        (FakePayload['repos'][0], "bsd-3-clause", True),
+        (FakePayload['repos'][1], "bsd-3-clause", False)
+    ])
+    def test_has_license(self, repo: Dict, key: str, res: bool) -> None:
+        """Test the method `has_license`"""
+        test_class = GithubOrgClient('google')
+        self.assertEqual(test_class.has_license(repo, key), res)
