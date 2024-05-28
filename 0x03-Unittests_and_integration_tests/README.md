@@ -1,7 +1,8 @@
 # Unittests and integration tests project
-
-## Description :book:
+> Learn advanced testing using (`Mocks`, `Patching`, `Parameterization`)
 ---
+## Description 📄
+
 This project is a simple example of how to create a project with unittests and integration tests.
 The aim of this project is to learn about advanced testing techniques and how to use them in a real project.
 Advanced testing techniques include:
@@ -11,9 +12,9 @@ Advanced testing techniques include:
 - Patching
 - Parametrized tests
 - Test fixtures
-
-## Language & libraries :world :wrench:
 ---
+## Language & libraries 🌐 🛠️
+
 > Language:
 - Python 3.7 or higher
 
@@ -24,9 +25,8 @@ Advanced testing techniques include:
 - `functools`
 - `unittest.mock`
 - `requests`
-
-## How to run the tests :running:
 ---
+## How to run the tests :running:
 To run the tests, you need to use the following command:
 ```bash
 python -m unittest discover -s tests
